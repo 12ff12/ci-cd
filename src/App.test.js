@@ -1,11 +1,8 @@
-
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('fails intentionally because text is wrong', () => {
+test('renders the correct heading', () => {
   render(<App />);
-  const headingElement = screen.getByText(/this text does not exist/i);
+  const headingElement = screen.getByText(/will work/i);
   expect(headingElement).toBeInTheDocument();
 });
-
-
