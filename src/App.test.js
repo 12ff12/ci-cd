@@ -1,8 +1,11 @@
+
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('fails intentionally because text is wrong', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const headingElement = screen.getByText(/this text does not exist/i);
+  expect(headingElement).toBeInTheDocument();
 });
+
+
