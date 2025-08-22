@@ -13,11 +13,13 @@ jobs:
     name: CI - Build, Test & SonarCloud
     runs-on: ubuntu-latest
     outputs:
-      quality_gate_status: ${{ steps.qualitygate.outputs.qualityGateStatus }}
+      quality_gate_status: ${{ steps.qualitygate.outputs.quality_gate_status }}
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -25,36 +27,33 @@ jobs:
           node-version: "18"
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run Tests
         run: npm test -- --watchAll=false --ci
 
       - name: Build
-        run: CI=false npm run build --if-present
+        run: npm run build --if-present
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v2.0.2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
             -Dsonar.projectKey=12ff12_ci-cd
             -Dsonar.organization=12ff12
-        env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: SonarCloud Quality Gate
+      - name: Wait for Quality Gate
         id: qualitygate
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
-        with:
-          scanMetadataReportFile: .scannerwork/report-task.txt
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   cd:
     name: Deploy to Vercel
     needs: ci
-    if: ${{ needs.ci.outputs.quality_gate_status == 'passed' }}
+    if: ${{ needs.ci.outputs.quality_gate_status == 'OK' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -69,4 +68,4 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: .
           github-comment: true
-          prod: true
+          vercel-args: '--prod'
