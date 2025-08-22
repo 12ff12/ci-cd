@@ -13,7 +13,7 @@ jobs:
     name: CI - Build, Test & SonarCloud
     runs-on: ubuntu-latest
     outputs:
-      quality_gate_status: ${{ steps.qualitygate.outputs.quality_gate_status }}
+      quality_gate_status: ${{ steps.qualitygate.outputs.qualityGateStatus }}
 
     steps:
       - name: Checkout Code
