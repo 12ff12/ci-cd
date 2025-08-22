@@ -13,13 +13,13 @@ jobs:
     name: CI - Build, Test & SonarCloud
     runs-on: ubuntu-latest
     outputs:
-      "quality_gate_status": ${{ steps.qualitygate.outputs['quality-gate-status'] }}
+      quality_gate_status: ${{ steps.qualitygate.outputs['quality-gate-status'] }}
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Required for SonarCloud PR analysis
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -51,10 +51,13 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Debug Quality Gate
+        run: echo "Quality Gate Status: ${{ steps.qualitygate.outputs['quality-gate-status'] }}"
+
   cd:
     name: Deploy to Vercel
     needs: ci
-    if: ${{ needs.ci.outputs.quality_gate_status == 'OK' && github.event_name == 'push' }}
+    if: ${{ needs.ci.outputs.quality_gate_status == 'OK' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -77,4 +80,4 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: .
           github-comment: true
-          prod: true
+          vercel-args: '--prod'
