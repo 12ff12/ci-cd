@@ -5,7 +5,7 @@ function App() {
   const [count, setCount] = useState(0);
   return (
     <div className="App">
-      <h1>sonar approved</h1>
+      <h1>sonar approvedd</h1>
     </div>
   );
 }
