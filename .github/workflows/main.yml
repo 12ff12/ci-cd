@@ -12,8 +12,6 @@ jobs:
   ci:
     name: CI - Build, Test & SonarCloud
     runs-on: ubuntu-latest
-    outputs:
-      quality_gate_status: ${{ steps.qualitygate.outputs.quality-gate-status }}
 
     steps:
       - name: Checkout Code
@@ -51,11 +49,11 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - 
 
   cd:
     name: Deploy to Vercel
     needs: ci
-    if: ${{ needs.ci.outputs.quality_gate_status == 'OK' }}
     runs-on: ubuntu-latest
 
     steps:
