@@ -68,7 +68,7 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v2.0.2
         env:
-          SONAR_HOST_URL: https://sonarcloud.io  # ← ADD THIS LINE
+          SONAR_HOST_URL: https://sonarcloud.io
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
@@ -106,4 +106,4 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: .
           github-comment: true
-          prod: true
+          vercel-args: '--prod'  # ← CHANGED FROM 'prod: true' TO 'vercel-args: '--prod''
