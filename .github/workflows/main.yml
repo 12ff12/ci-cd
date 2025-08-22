@@ -51,8 +51,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Debug Quality Gate Output
-        run: echo "Status: ${{ steps.qualitygate.outputs.quality-gate-status }}"
 
   cd:
     name: Deploy to Vercel
