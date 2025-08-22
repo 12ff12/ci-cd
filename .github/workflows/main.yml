@@ -34,11 +34,13 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v2.0.2
         with:
-          args: >
-            -Dsonar.projectKey=your_project_key
-            -Dsonar.organization=your_org_key
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+         args: >
+          -Dsonar.projectKey=your_project_key
+          -Dsonar.organization=your_org_key
+          env:
+           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
 
       - name: SonarCloud Quality Gate
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
