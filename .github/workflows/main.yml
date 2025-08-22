@@ -2,9 +2,11 @@ name: CI/CD with SonarCloud Gate
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   ci:
@@ -36,7 +38,7 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v2.0.2
         env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: https://sonarcloud.io
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
@@ -57,9 +59,23 @@ jobs:
     needs: ci
     if: ${{ needs.ci.outputs.quality_gate_status == 'OK' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Debug CI Outputs
+        run: |
+          echo "CI Job Outputs: ${{ toJSON(needs.ci.outputs) }}"
+          echo "Quality Gate Status: ${{ needs.ci.outputs.quality_gate_status }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
@@ -69,4 +85,4 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: .
           github-comment: true
-          vercel-args: '--prod'
+          prod: true
