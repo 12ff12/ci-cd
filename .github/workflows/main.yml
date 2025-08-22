@@ -22,19 +22,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install dependencies   # ✅ Added this so react-scripts is available
+      - name: Install dependencies
         run: npm install
 
       - name: Run tests
-        run: npm test -- --watchAll=false --ci   # ✅ safer test command
+        run: npm test -- --watchAll=false --ci
 
   deploy:
     runs-on: ubuntu-latest
     needs: test
-    if: success()   # <--- this makes sure deploy only runs if tests succeed
+    if: success()
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy to production
-        run: echo "🚀 Deploying..."
+      - name: Deploy to Vercel (Production)
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          github-comment: true
+          prod: true
