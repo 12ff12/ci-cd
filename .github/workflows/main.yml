@@ -12,6 +12,8 @@ jobs:
   ci:
     name: CI - Build, Test & SonarCloud
     runs-on: ubuntu-latest
+    outputs:
+      quality_gate_status: ${{ steps.qualitygate.outputs.quality_gate_status }}
 
     steps:
       - name: Checkout Code
@@ -42,8 +44,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: SonarCloud Quality Gate
-        uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
         id: qualitygate
+        uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
         with:
           scanMetadataReportFile: .scannerwork/report-task.txt
         env:
