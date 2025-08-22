@@ -5,7 +5,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>sonar approved</h1>
+      <h1>dasigma man</h1>
     </div>
   );
 }
