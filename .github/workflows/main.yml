@@ -1,17 +1,16 @@
-name: CI/CD with SonarCloud Gate
+name: CI/CD with SonarCloud
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   ci:
-    name: CI - Build, Test & SonarCloud
+    name: Build & SonarCloud
     runs-on: ubuntu-latest
+    outputs:
+      quality_gate_status: ${{ steps.qualitygate.outputs.quality-gate-status }}
 
     steps:
       - name: Checkout Code
@@ -48,8 +47,6 @@ jobs:
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - 
 
   cd:
     name: Deploy to Vercel
