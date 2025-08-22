@@ -13,7 +13,7 @@ jobs:
     name: CI - Build, Test & SonarCloud
     runs-on: ubuntu-latest
     outputs:
-      quality_gate_status: ${{ steps.qualitygate.outputs.quality-gate-status }}
+      quality_gate_status: ${{ steps.qualitygate.outputs.quality_gate_status }}
 
     steps:
       - name: Checkout Code
@@ -52,7 +52,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Debug Quality Gate Output
-        run: echo "Status: ${{ steps.qualitygate.outputs.quality-gate-status }}"
+        run: echo "Status: ${{ steps.qualitygate.outputs.quality_gate_status }}"
 
   cd:
     name: Deploy to Vercel
