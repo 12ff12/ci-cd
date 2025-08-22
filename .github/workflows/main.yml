@@ -13,7 +13,7 @@ jobs:
     name: CI - Build, Test & SonarCloud
     runs-on: ubuntu-latest
     outputs:
-      quality_gate_status: ${{ steps.qualitygate.outputs.quality_gate_status }}
+      quality_gate_status: ${{ steps.qualitygate.outputs.quality-gate-status }}
 
     steps:
       - name: Checkout Code
@@ -51,15 +51,27 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Debug Output
+        run: |
+          echo "Quality Gate Status: ${{ steps.qualitygate.outputs.quality-gate-status }}"
+          echo "All outputs:"
+          echo "${{ toJSON(steps.qualitygate.outputs) }}"
+
   cd:
     name: Deploy to Vercel
     needs: ci
-    if: ${{ needs.ci.outputs.quality_gate_status == 'OK' }}
+    if: ${{ needs.ci.outputs.quality_gate_status == 'OK' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Debug CI Outputs
+        run: |
+          echo "CI Job Outputs:"
+          echo "${{ toJSON(needs.ci.outputs) }}"
+          echo "Quality Gate Status from CI: ${{ needs.ci.outputs.quality_gate_status }}"
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
