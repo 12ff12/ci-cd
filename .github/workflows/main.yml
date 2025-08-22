@@ -68,6 +68,7 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v2.0.2
         env:
+          SONAR_HOST_URL: https://sonarcloud.io  # ← ADD THIS LINE
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
